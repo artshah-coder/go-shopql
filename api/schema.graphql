@@ -1,0 +1,56 @@
+directive @shopql_authorized on FIELD_DEFINITION
+
+type Catalog {
+    id: Int!
+    name: String!
+    """возвращает родительский каталог"""
+    parent: Catalog
+    """возвращает список подкаталогов данного каталога"""
+    childs: [Catalog!]
+    """возвращает список товаров из данного каталога"""
+    items(limit: Int! = 3, offset: Int! = 0): [Item!]!
+}
+
+type Item {
+    id: Int!
+    name: String!
+    """возвращает каталог товара"""
+    parent: Catalog!
+    """возвращает продавца товара"""
+    seller: Seller!
+    inCart: Int! @shopql_authorized
+    inStockText: String!
+}
+
+type Seller {
+    id: Int!
+    name: String!
+    """возвращает товары данного продавца"""
+    items(limit: Int! = 3): [Item!]!
+}
+
+input Bundle {
+    itemID: Int!
+    quantity: Int!
+}
+
+type InCartItem {
+    item: Item
+    quantity: Int!
+}
+
+type Query {
+    """возвращает объект каталог по ID каталога"""
+    Catalog(ID: ID!): Catalog
+    """возвращает объект продавец по ID продавца"""
+    Seller(ID: ID!): Seller
+    """возвращает содержимое корзины пользователя"""
+    MyCart: [InCartItem!]! @shopql_authorized
+}
+
+type Mutation {
+    """добавляет товары в корзину"""
+    AddToCart(in: Bundle!): [InCartItem!]! @shopql_authorized
+    """удаляет товары из корзины"""
+    RemoveFromCart(in: Bundle!): [InCartItem!]! @shopql_authorized
+}

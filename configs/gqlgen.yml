@@ -1,0 +1,45 @@
+schema:
+  - api/schema.graphql
+exec:
+  filename: internal/graphql/graphql_generated.go
+model:
+  filename: internal/graphql/graphql_models_gen.go
+resolver:
+  filename: internal/graphql/graphql_resolver.go
+  type: Resolver
+
+  filename_template: "{name}.resolvers.go"
+call_argument_directives_with_null: true
+
+models:
+  Catalog:
+    model: 
+      - github.com/artshah-coder/go-shopql/internal/catalog.Catalog
+    fields:
+      parent:
+        resolver: true
+      childs:
+        resolver: true
+      items:
+        resolver: true
+  Item:
+    model:
+      - github.com/artshah-coder/go-shopql/internal/item.Item
+    fields:
+      parent:
+        resolver: true
+      seller:
+        resolver: true
+      inCart:
+        resolver: true
+      inStockText:
+        resolver: true
+  Seller:
+    model:
+      - github.com/artshah-coder/go-shopql/internal/seller.Seller
+    fields:
+      items:
+        resolver: true
+  InCartItem:
+    model:
+      - github.com/artshah-coder/go-shopql/internal/cart.InCartItem
